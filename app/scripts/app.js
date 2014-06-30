@@ -8,16 +8,21 @@
  *
  * Main module of the application.
  */
-angular
+var app = angular
   .module('dimsum8App', [
     'ngAnimate',
     'ngCookies',
     'ngResource',
     'ngRoute',
     'ngSanitize',
-    'ngTouch'
-  ])
-  .config(function ($routeProvider) {
+    'ngTouch',
+    'firebase',
+    'ui.bootstrap'
+  ]);
+   
+
+ 
+app.config(function ($routeProvider) {
     $routeProvider
       .when('/', {
         templateUrl: 'views/main.html',
