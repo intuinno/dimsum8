@@ -1,23 +1,381 @@
-<div class="jumbotron">
-  <h1>'Allo, 'Allo!</h1>
-  <p class="lead">
-    <img src="images/yeoman.png" alt="I'm Yeoman"><br>
-    Always a pleasure scaffolding your apps.
-  </p>
-  <p><a class="btn btn-lg btn-success" ng-href="#">Splendid!<span class="glyphicon glyphicon-ok"></span></a></p>
-</div>
+<div class="row">
+    <div class="col-md-8">
+        <div>
+            <h5>
+                <div ng-class="{tryMe: isPlotSelectFocused}" focus-me="isPlotSelectFocused" popover="Try me!" popover-trigger="focus" popover-placement="right">
+                    <div class="btn-group">
 
-<div class="row marketing">
-  <h4>HTML5 Boilerplate</h4>
-  <p>
-    HTML5 Boilerplate is a professional front-end template for building fast, robust, and adaptable web apps or sites.
-  </p>
+                        <button type="button" class="btn btn-default active" ng-model="nomaConfig.isGather" btn-radio="'scatter'">Scatter</button>
 
-  <h4>Angular</h4>
-  <p>
-    AngularJS is a toolset for building the framework most suited to your application development.
-  </p>
+                        <button type="button" class="btn btn-default" ng-model="nomaConfig.isGather" btn-radio="'jitter'">Jitter</button>
 
-  <h4>Karma</h4>
-  <p>Spectacular Test Runner for JavaScript.</p>
+                        <button type="button" class="btn btn-default" ng-model="nomaConfig.isGather" btn-radio="'gather'">Gather</button>
+
+                    </div>
+                </div>
+                <alert class="chart-instruction" ng-show="isPlotSelectFocused" close="isPlotSelectFocused=false">
+                    Try these buttons.</alert>
+
+            </h5>
+
+            <h4 class="chart-title">{{activeData}}</h4>
+            <div>
+                <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+            </div>
+            <div nomarect="nomarect" class="nomarect" data="nomaData" config="nomaConfig" border="nomaBorder" round="nomaRound" shaperenderingmode="nomaShapeRendering" on-click="d3OnClick(item)"></div>
+            <div class="chart-simple-interface">
+                <h5>Show me
+
+                    <select ng-model="nomaConfig.xDim" ng-options="f for f in nomaConfig.dims">
+
+                        <option value="">-- undefined --</option>
+
+                    </select>&nbsp;vs&nbsp;.
+
+                    <select ng-model="nomaConfig.yDim" ng-options="f for f in nomaConfig.dims">
+
+                        <option value="">-- undefined --</option>
+
+                    </select>
+
+                    </br>
+                    </br>
+                    Mark nodes with color according to
+
+                    <select ng-model="nomaConfig.colorDim" ng-options="f for f in nomaConfig.dims">
+
+                        <option value="">-- undefined --</option>
+
+                    </select>
+                </h5>
+
+
+                <div ng-class="{tryMe: isRelativeSelectFocused}">
+                    <h6>
+                        <input type='checkbox' ng-model="nomaConfig.relativeMode" ng-trueValue="relative" ng-false-value='absolute'>Check this to make it easy to compare groups of different sizes.</h6>
+
+                </div>
+                <alert class="chart-instruction" ng-show="isRelativeSelectFocused" close="isRelativeSelectFocused=false">
+                    Try this check button.</alert>
+
+
+            </div>
+        </div>
+        <accordion close-others="false">
+            <accordion-group is-open="isAdvancedOptionOpen" ng-hide='false'>
+
+
+                <accordion-heading> <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isAdvancedOptionOpen, 'glyphicon-chevron-right': !isAdvancedOptionOpen}"></i>
+                    Under the Hood (Advanced Option)</accordion-heading>
+                <div class="well">
+                    <div>
+                        <table class="table table-hover ">
+                            <tr>
+                                <td>
+                                    <form class="form-inline" role="form">
+                                        <div class="form-group">
+                                            <div ng-class="{tryMe: isBinSizeFocused}">
+
+                                                Data Binning Size:
+                                                <input type="number" ng-pattern="onlyNumbers" name="binSize" ng-model="nomaConfig.binSize" min="1" max="100" class="input-mini ">
+                                                <input type="range" ng-model="nomaConfig.binSize" min="1" max="50" step="1">
+
+
+                                                <span class="error" ng-show="DemoCtrl.binSize.$error.number">
+
+                                                    Not valid number!</span>
+
+
+
+                                            </div>
+                                            <alert class="chart-instruction" ng-show="isBinSizeFocused" close="isBinSizeFocused=false">
+                                                Try different values for a bin size.</alert>
+
+                                        </div>
+
+
+                                    </form>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div name="CSVurlForm">
+
+                                        Load CSV: {{customCSV}}
+                                        <br>
+
+                                        <input clas="input-xxlarge search-query" name="csvInput" type="text" ng-model="customCSV" placeholder="Enter the url of CSV">
+                                        <a href="" class="btn btn-sm btn-default" ng-click="changeActiveDataCustomCSV(customCSV)">Load</a>
+
+                                        <alert class="error" ng-show="csvInput.$error.url">Not valid url!</alert>
+
+
+
+
+                                    </div>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td>
+
+                                    <div>
+
+                                        If you want to try more option, you can use a dev version <a href="http://gatherplot.herokuapp.com" class="btn btn-link btn-default">here</a>!
+
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+
+
+                    </div>
+
+                    <!--/span-->
+                </div>
+                <!--/row-->
+            </accordion-group>
+        </accordion>
+    </div>
+    <!--/span-->
+    <div class="col-md-4">
+        <div class="sidebar-nav">
+            <h3>Guided Tours</h3>
+            <accordion close-others="true">
+
+                <accordion-group is-open="isCarsOpen">
+                    <accordion-heading> <i class="pull-left glyphicon" ng-class="{'glyphicon-chevron-down': isCarsOpen, 'glyphicon-chevron-right': !isCarsOpen}"></i>
+                        Cars Dataset <a href="" class="pull-right btn btn-xs btn-default" ng-click="changeActiveDataCars()">Load</a>
+                    </accordion-heading>
+                    <div>
+                        <table class="table table-hover table-condensed">
+                            <tr>
+                                <td>This example introduces gatherplots.
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td>
+                                    First, start with scatterplots.
+                                </td>
+                                <td>
+                                    <a href="" class="pull-right btn btn-link btn-default chart-instruction" ng-click="changeConfigCarsScatterplots()">Visualize</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Scatterplots produces overplotting with Cylinders.
+                                </td>
+                                <td>
+                                    <a href="" class="pull-right btn btn-link btn-default" ng-click="changeConfigCarsScatterOneNominal()">Visualize
+                                </a>
+                                </td>
+                            </tr>
+                            <tr>
+
+                                <td>
+                                    Jittering can help determine a size of each group.
+                                </td>
+                                <td>
+                                    <a href="" class="pull-right btn btn-link btn-default" ng-click="changeConfigCarsJitterOneNominal()">Visualize
+                                </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+
+                                    However, when there are multiple subgroups, it is hard to judge the distribution.
+                                </td>
+                                <td>
+                                    <a href="" class="pull-right btn btn-link btn-default" ng-click="changeConfigCarsJitterOneNominalWithColor()">Visualize
+                                </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Gatherplots make overview of the distribution easier.
+                                </td>
+                                <td>
+                                    <a href="" class="pull-right btn btn-link btn-default" ng-click="changeConfigCarsGatherOneNominalWithColor()">Visualize
+                                </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    It can be used with two nominal variables, too.
+                                </td>
+                                <td>
+                                    <a href="" class="pull-right btn btn-link btn-default" ng-click="changeConfigCarsGatherTwoNominalWithColor()">Visualize
+                                </a>
+                                </td>
+                            </tr>
+                            <tr>
+
+                                <td>
+                                    Stacking nodes works with continuous variables as color dimension.
+                                </td>
+                                <td>
+                                    <a href="" class="pull-right btn btn-link btn-default" ng-click="changeConfigCarsGatherTwoNominalWithContinuousColor()">Visualize
+                                </a>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+                </accordion-group>
+
+
+                <accordion-group is-open="isTitanicOpen">
+                    <accordion-heading> <i class="pull-left glyphicon" ng-class="{'glyphicon-chevron-down': isTitanicOpen, 'glyphicon-chevron-right': !isTitanicOpen}"></i>
+                        Survivor of Titanic <a class="pull-right btn btn-xs btn-default" href="" ng-click="changeActiveDataTitanic()">Load</a>
+                    </accordion-heading>
+                    <div>
+
+                        <table class="table table-hover table-condensed">
+
+                            <tr>
+                                Let's explore advanced features of gatherplots.
+                            </tr>
+                            <td>First begin with all the people on board.
+                            </td>
+                            <td>
+                                <a href="" class="pull-right btn btn-link btn-default " ng-click="settingForTitanicLoadAll()">Visualize
+                                </a>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p>
+                                        See how many people survived in general.
+                                    </p>
+                                </td>
+                                <td>
+                                    <a href="" class="pull-right btn btn-link btn-default " ng-click="settingForTitanicLoadAllSurvived()">Visualize
+                                </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+
+                                    <p>
+                                        Is there gender-wise difference?
+                                    </p>
+                                </td>
+                                <td>
+                                    <a href="" class="pull-right btn btn-link btn-default " ng-click="settingForTitanicGenderSurvived()">Visualize
+                                </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p>
+                                        Add a class variable to analysis.
+                                    </p>
+                                </td>
+                                <td>
+                                    <a href="" class="pull-right btn btn-link btn-default " ng-click="settingForTitanicClassGenderSurvived()">Visualize
+                                </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+
+                                    <p>
+                                        How we can compare subgroups within groups of different size?
+                                    </p>
+                                </td>
+                                <td>
+
+                                    <a href="" class="pull-right btn btn-link btn-default " ng-click="settingForTitanicClassGenderSurvivedRelative()">Visualize
+                                </a>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+                </accordion-group>
+
+                <accordion-group is-open="isMammoOpen">
+                    <accordion-heading> <i class="pull-left glyphicon" ng-class="{'glyphicon-chevron-down': isMammoOpen, 'glyphicon-chevron-right': !isMammoOpen}"></i>
+                        Bayesian Inference - Mammogram <a href="" class="pull-right btn btn-xs btn-default" ng-click="changeActiveDataMammo()">Load</a>
+                    </accordion-heading>
+
+                    <p>The absolute/relative mode of gatherplot can be used to aid the decision process of the bayesian inference problem.</p>
+                    <p>The probability that a woman has breast cancer is 1%. The probability that the disease is detected by a mammography is 80%. The probability that the test detects the disease although the patient does not have it is 9.6%.
+                        <a href="" class="pull-right btn btn-link btn-default" ng-click="changeConfigMammoProblem()">Visualize</a>
+                    </p>
+                    <p>If a woman is tested as positive, what is the probability that she indeed has breast cancer? <a href="" class="pull-right btn btn-link btn-default" ng-click="changeConfigMammoAnswer()">Visualize</a>
+                    </p>
+                </accordion-group>
+
+
+                <accordion-group is-open="isContinuousOpen">
+                    <accordion-heading> <i class="pull-left glyphicon" ng-class="{'glyphicon-chevron-down': isContinuousOpen, 'glyphicon-chevron-right': !isContinousOpen}"></i>
+                        Continuous Variables <a href="" class="pull-right btn btn-xs btn-default" ng-click="changeActiveDataContinuous()">Load</a>
+                    </accordion-heading>
+
+                    <div>
+
+                        <table class="table table-hover table-condensed">
+
+                            <tr>
+                                Gatherplots are also effective dealing with overplotting in continuous variables, too.
+                            </tr>
+                            <td>First create a random dataset with large nodes to create overplotting.
+                            </td>
+                            <td>
+                                <a href="" class="pull-right btn btn-link btn-default " ng-click="settingForContinuousScatter()">Visualize
+                                </a>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p>
+                                        See how gatherplots handle this.
+                                    </p>
+                                </td>
+                                <td>
+                                    <a href="" class="pull-right btn btn-link btn-default " ng-click="settingForContinuousGather()">Visualize
+                                </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+
+                                    <p>
+                                        You can change bin size, too.
+                                    </p>
+                                </td>
+                                <td>
+                                    <a href="" class="pull-right btn btn-link btn-default " ng-click="settingForContinuousGatherWithBinSize()">Visualize
+                                </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p>
+                                        Relative mode shows distributions of subgroups in minor groups enlarged.
+                                    </p>
+                                </td>
+                                <td>
+                                    <a href="" class="pull-right btn btn-link btn-default " ng-click="settingForContinuousGatherWithBinSizeRelative()">Visualize
+                                </a>
+                                </td>
+                            </tr>
+
+                        </table>
+
+                    </div>
+
+
+
+                </accordion-group>
+
+            </accordion>
+        </div>
+        <!--/.well -->
+    </div>
+    <!--/span-->
 </div>
