@@ -16,7 +16,6 @@ var app = angular
     'ngRoute',
     'ngSanitize',
     'ngTouch',
-    'firebase',
     'ui.bootstrap'
   ]);
    
